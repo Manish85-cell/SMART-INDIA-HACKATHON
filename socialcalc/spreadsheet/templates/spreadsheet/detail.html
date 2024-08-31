@@ -1,0 +1,45 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ spreadsheet.title }}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>{{ spreadsheet.title }}</h1>
+    <table border="1">
+        {% for row in 20|range_filter %}
+            <tr>
+                {% for col in 20|range_filter %}
+                    <td contenteditable="true" 
+                        data-row="{{ row }}" 
+                        data-column="{{ col }}"
+                        class="cell" style="width:50px">
+                        {% for key, value in cell_dict %}
+                           {% if row == key|getfirst and col == key|getsecond %}
+                               {{value}}
+                           {% endif %}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <script>
+        $(document).ready(function() {
+            $('.cell').on('blur', function() {
+                var row = $(this).data('row');
+                var column = $(this).data('column');
+                var value = $(this).text();
+                $.post("{% url 'update_cell' spreadsheet.id %}", {
+                    row: row,
+                    column: column,
+                    value: value,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
