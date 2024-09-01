@@ -18,7 +18,7 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("create_spreadsheet"))
         return render(request, "spreadsheet/login.html", {"message": "Invalid Details"})
     return render(request, "spreadsheet/login.html") 
             
@@ -39,12 +39,12 @@ def register(request):
         except IntegrityError:
             return render(request, "spreadsheet/register.html", {"message":"username already taken"})
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("create_spreadsheet"))
     return render(request, "spreadsheet/register.html")   
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("create_spreadsheet"))
 
 def index(request):
     return render(request, "spreadsheet/index.html")
